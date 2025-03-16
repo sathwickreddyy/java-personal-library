@@ -12,6 +12,20 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // lombok
+    implementation 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    // SLF4J API (Logging Facade)
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    // Logback (Actual Logging Implementation)
+    implementation 'ch.qos.logback:logback-classic:1.4.14'
+
+    // redis
+    implementation 'redis.clients:jedis:3.7.0'
+
+    implementation 'org.apache.commons:commons-math3:3.6.1'
 }
 
 test {
