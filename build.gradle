@@ -5,13 +5,17 @@ plugins {
 }
 
 scmVersion {
-    tag { prefix = '' } // Removes "v" prefix from tags
+    tag { prefix = '' }
+    repository {
+        remote = 'origin'
+        customUsername = System.getenv("GITHUB_ACTOR")  // GitHub username
+        customPassword = System.getenv("GITHUB_TOKEN")  // GitHub personal access token
+    }
 }
-version = scmVersion.version
 
 
 group = 'com.java'
-version = '1.0-SNAPSHOT'
+version = scmVersion.version
 
 repositories {
     mavenCentral()
