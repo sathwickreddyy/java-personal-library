@@ -13,7 +13,7 @@ public V read(K key) {
         return cachedValue.get();
     }
     // If not in cache, fetch from DB, cache it, then return
-    V dbValue = databaseService.load(key);
+    V dbValue = cacheToDatabaseService.load(key);
     if (dbValueExists(dbValue)) {
         cache.put(key, dbValue);
         return dbValue;
@@ -33,7 +33,7 @@ public V read(K key) {
         return cachedValue.get();
     }
     // If not in cache, fetch from DB, but does not automatically cache the result
-    V dbValue = databaseService.load(key);
+    V dbValue = cacheToDatabaseService.load(key);
     if (dbValue != null) {
         // Optionally cache the result
         cache.put(key, dbValue);

@@ -1,6 +1,6 @@
 package com.java.oops.cache.strategy;
 
-import com.java.oops.cache.database.DatabaseService;
+import com.java.oops.cache.database.CacheToDatabaseService;
 import com.java.oops.cache.types.AbstractCache;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,17 +30,17 @@ import java.util.Optional;
 public class WriteThroughStrategy<K, V> implements CachingStrategy<K, V> {
 
     private final AbstractCache<K, V> cache;
-    private final DatabaseService<K, V> databaseService;
+    private final CacheToDatabaseService<K, V> cacheToDatabaseService;
 
     /**
      * Constructs a WriteThroughStrategy instance.
      *
      * @param cache           Cache implementation used for caching operations
-     * @param databaseService Database service implementation for persistent storage
+     * @param cacheToDatabaseService Database service implementation for persistent storage
      */
-    public WriteThroughStrategy(AbstractCache<K, V> cache, DatabaseService<K, V> databaseService) {
+    public WriteThroughStrategy(AbstractCache<K, V> cache, CacheToDatabaseService<K, V> cacheToDatabaseService) {
         this.cache = cache;
-        this.databaseService = databaseService;
+        this.cacheToDatabaseService = cacheToDatabaseService;
     }
 
     /**
@@ -60,7 +60,7 @@ public class WriteThroughStrategy<K, V> implements CachingStrategy<K, V> {
             }
 
             log.debug("Cache miss for key: {}. Retrieving from database...", key);
-            V dbValue = databaseService.load(key);
+            V dbValue = cacheToDatabaseService.load(key);
 
             if (dbValue != null) {
                 // Optionally populate the cache after DB retrieval to improve subsequent reads
@@ -87,7 +87,7 @@ public class WriteThroughStrategy<K, V> implements CachingStrategy<K, V> {
     public void write(K key, V value) {
         try {
             // First write to the database
-            databaseService.save(key, value);
+            cacheToDatabaseService.save(key, value);
             log.debug("Successfully persisted data into DB for key: {}", key);
 
             // Immediately update the cache after successful DB write

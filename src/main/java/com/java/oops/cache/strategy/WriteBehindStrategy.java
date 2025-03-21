@@ -1,6 +1,6 @@
 package com.java.oops.cache.strategy;
 
-import com.java.oops.cache.database.DatabaseService;
+import com.java.oops.cache.database.CacheToDatabaseService;
 import com.java.oops.cache.types.AbstractCache;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,19 +32,19 @@ import java.util.concurrent.TimeUnit;
 public class WriteBehindStrategy<K, V> implements CachingStrategy<K, V> {
 
     private final AbstractCache<K, V> cache;
-    private final DatabaseService<K, V> databaseService;
+    private final CacheToDatabaseService<K, V> cacheToDatabaseService;
     private final ExecutorService executorService;
 
     /**
      * Constructs a WriteBehindStrategy instance with provided cache and database service.
      *
      * @param cache           Cache implementation used for caching operations
-     * @param databaseService Database service implementation for persistent storage
+     * @param cacheToDatabaseService Database service implementation for persistent storage
      * @param executorService Executor service for asynchronous operations
      */
-    public WriteBehindStrategy(AbstractCache<K, V> cache, DatabaseService<K, V> databaseService, ExecutorService executorService) {
+    public WriteBehindStrategy(AbstractCache<K, V> cache, CacheToDatabaseService<K, V> cacheToDatabaseService, ExecutorService executorService) {
         this.cache = cache;
-        this.databaseService = databaseService;
+        this.cacheToDatabaseService = cacheToDatabaseService;
         this.executorService = executorService;
     }
 
@@ -64,7 +64,7 @@ public class WriteBehindStrategy<K, V> implements CachingStrategy<K, V> {
             }
 
             log.debug("Cache miss for key: {}. Retrieving from database...", key);
-            V dbValue = databaseService.load(key);
+            V dbValue = cacheToDatabaseService.load(key);
 
             if (dbValueExists(dbValue)) {
                 cache.put(key, dbValue);
@@ -96,7 +96,7 @@ public class WriteBehindStrategy<K, V> implements CachingStrategy<K, V> {
             // Asynchronously persist data into DB using executor service
             executorService.submit(() -> {
                 try {
-                    databaseService.save(key, value);
+                    cacheToDatabaseService.save(key, value);
                     log.debug("Asynchronously persisted data into DB successfully for key: {}", key);
                 } catch (Exception ex) {
                     log.error("Async write failed for key: {}", key, ex);

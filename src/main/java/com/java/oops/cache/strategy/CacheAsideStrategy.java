@@ -1,6 +1,6 @@
 package com.java.oops.cache.strategy;
 
-import com.java.oops.cache.database.DatabaseService;
+import com.java.oops.cache.database.CacheToDatabaseService;
 import com.java.oops.cache.types.AbstractCache;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,17 +30,17 @@ import java.util.Optional;
 public class CacheAsideStrategy<K, V> implements CachingStrategy<K, V> {
 
     private final AbstractCache<K, V> cache;
-    private final DatabaseService<K, V> databaseService;
+    private final CacheToDatabaseService<K, V> cacheToDatabaseService;
 
     /**
      * Initializes CacheAsideStrategy with specified cache and database service.
      *
      * @param cache AbstractCache implementation used for caching operations
-     * @param databaseService DatabaseService implementation used for persistent storage
+     * @param cacheToDatabaseService DatabaseService implementation used for persistent storage
      */
-    public CacheAsideStrategy(AbstractCache<K, V> cache, DatabaseService<K, V> databaseService) {
+    public CacheAsideStrategy(AbstractCache<K, V> cache, CacheToDatabaseService<K, V> cacheToDatabaseService) {
         this.cache = cache;
-        this.databaseService = databaseService;
+        this.cacheToDatabaseService = cacheToDatabaseService;
     }
 
     /**
@@ -59,7 +59,7 @@ public class CacheAsideStrategy<K, V> implements CachingStrategy<K, V> {
             }
 
             log.debug("Cache miss for key: {}. Fetching from database...", key);
-            V dbValue = databaseService.load(key);
+            V dbValue = cacheToDatabaseService.load(key);
 
             if (dbValue != null) {
                 cache.put(key, dbValue);
@@ -83,7 +83,7 @@ public class CacheAsideStrategy<K, V> implements CachingStrategy<K, V> {
     @Override
     public void write(K key, V value) {
         try {
-            databaseService.save(key, value);
+            cacheToDatabaseService.save(key, value);
             log.debug("Successfully saved data to DB for key: {}", key);
 
             // Invalidate the cache entry after DB update to maintain consistency

@@ -59,9 +59,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # Step 3: Publish to GitHub Packages
+      # Step 3: Publish & Release to GitHub Packages
       - name: Publish Library to GitHub Packages
-        run: ./gradlew publish --no-daemon
+        run: ./gradlew publish --no-daemon && ./gradlew release --no-daemon
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

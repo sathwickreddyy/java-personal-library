@@ -1,6 +1,6 @@
 package com.java.oops.cache.strategy;
 
-import com.java.oops.cache.database.DatabaseService;
+import com.java.oops.cache.database.CacheToDatabaseService;
 import com.java.oops.cache.types.AbstractCache;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,17 +33,17 @@ import java.util.Optional;
 public class ReadThroughStrategy<K, V> implements CachingStrategy<K, V> {
 
     private final AbstractCache<K, V> cache;
-    private final DatabaseService<K, V> databaseService;
+    private final CacheToDatabaseService<K, V> cacheToDatabaseService;
 
     /**
      * Constructs a ReadThroughStrategy instance.
      *
      * @param cache           Cache implementation used for caching operations
-     * @param databaseService Database service used for persistent storage operations
+     * @param cacheToDatabaseService Database service used for persistent storage operations
      */
-    public ReadThroughStrategy(AbstractCache<K, V> cache, DatabaseService<K, V> databaseService) {
+    public ReadThroughStrategy(AbstractCache<K, V> cache, CacheToDatabaseService<K, V> cacheToDatabaseService) {
         this.cache = cache;
-        this.databaseService = databaseService;
+        this.cacheToDatabaseService = cacheToDatabaseService;
     }
 
     /**
@@ -62,7 +62,7 @@ public class ReadThroughStrategy<K, V> implements CachingStrategy<K, V> {
             }
 
             log.debug("Cache miss for key: {}. Loading from DB.", key);
-            V dbValue = databaseService.load(key);
+            V dbValue = cacheToDatabaseService.load(key);
 
             if (dbValueExists(dbValue)) {
                 cache.put(key, dbValue);
@@ -87,7 +87,7 @@ public class ReadThroughStrategy<K, V> implements CachingStrategy<K, V> {
     @Override
     public void write(K key, V value) {
         try {
-            databaseService.save(key, value);
+            cacheToDatabaseService.save(key, value);
             log.debug("Saved data into DB successfully for key: {}", key);
 
             // Update cache synchronously after DB write

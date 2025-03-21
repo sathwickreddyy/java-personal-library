@@ -6,7 +6,7 @@ package com.java.oops.cache.database;
  * @param <K> Type of primary key used in storage operations
  * @param <V> Type of data stored/retrieved from storage
  */
-public interface DatabaseService<K,V>{
+public interface CacheToDatabaseService<K,V>{
     /**
      * Loads data from persistent storage based on provided key.
      *
@@ -22,4 +22,7 @@ public interface DatabaseService<K,V>{
      * @param val Data value to save into persistent storage
      */
     void save(K key,V val);
+
+    // @TODO
+    void bulkSave();
 }
