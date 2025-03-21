@@ -18,7 +18,7 @@ public interface AbstractCache<K, V> {
     /**
      * Returns the value for the given key
      * @param key Of type K
-     * @return Optional<V>
+     * @return Optional of type V
      */
     Optional<V> get(K key);
 

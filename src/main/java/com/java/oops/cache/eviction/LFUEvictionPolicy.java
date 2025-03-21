@@ -20,6 +20,7 @@ import java.util.Map;
  * <h2>LRU vs. LFU: Key Differences</h2>
  *
  * <table border="1">
+ *     <caption>LRU vs. LFU: Key Differences</caption>
  * <tr><th>Feature</th><th>LRU (Least Recently Used)</th><th>LFU (Least Frequently Used)</th></tr>
  * <tr><td><b>Eviction Rule</b></td><td>Removes the least recently accessed item</td><td>Removes the least frequently accessed item</td></tr>
  * <tr><td><b>Tracking Mechanism</b></td><td>Last access time</td><td>Access count</td></tr>

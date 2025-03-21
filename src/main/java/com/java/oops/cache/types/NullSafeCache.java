@@ -4,12 +4,16 @@ import java.util.Optional;
 
 /**
  * NullSafeCache with Null Object Pattern
- * @param <K>
- * @param <V>
+ * @param <K> Key of type K
+ * @param <V> Value of type V
  */
 public class NullSafeCache<K,V> implements AbstractCache<K, V> {
     private final AbstractCache<K, V> delegateCache;
 
+    /**
+     * Null Safe Cache constructor
+     * @param delegateCache Of type AbstractCache
+     */
     public NullSafeCache(AbstractCache<K, V> delegateCache) {
         this.delegateCache = delegateCache;
     }
@@ -31,7 +35,7 @@ public class NullSafeCache<K,V> implements AbstractCache<K, V> {
      * Returns the value for the given key
      *
      * @param key Of type K
-     * @return Optional<V>
+     * @return Optional of type V
      */
     @Override
     public Optional<V> get(K key) {

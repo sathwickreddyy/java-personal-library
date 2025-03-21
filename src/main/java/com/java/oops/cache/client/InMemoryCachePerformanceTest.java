@@ -12,10 +12,19 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 import java.util.Random;
 
+/**
+ * Test Class
+ */
 public class InMemoryCachePerformanceTest {
-
+    /**
+     * Test Runner
+     */
     private static final Logger logger = LoggerFactory.getLogger(InMemoryCachePerformanceTest.class);
 
+    /**
+     * Run the cache performance test
+     * @param args Command line arguments
+     */
     public static void main(String[] args) {
         int capacity = 300;
         int numOfRequests = 5000;

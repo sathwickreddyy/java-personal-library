@@ -44,6 +44,11 @@ test {
     useJUnitPlatform()
 }
 
+java {
+    withSourcesJar() // Include source code in the published artifact
+    withJavadocJar() // Include Javadoc in the published artifact
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {

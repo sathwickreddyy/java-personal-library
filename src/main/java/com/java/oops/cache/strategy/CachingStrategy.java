@@ -2,8 +2,8 @@ package com.java.oops.cache.strategy;
 
 /**
  * Interface for cache strategy
- * @param <K>
- * @param <V>
+ * @param <K> Key of type K
+ * @param <V> Value of type V
  */
 public interface CachingStrategy<K, V> {
     /**

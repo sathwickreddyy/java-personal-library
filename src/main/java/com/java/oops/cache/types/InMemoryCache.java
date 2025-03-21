@@ -8,6 +8,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * In Memory Cache - Generic
+ * @param <K> Key of type K
+ * @param <V> Value of type V
+ */
 @Slf4j
 @Getter
 public class InMemoryCache<K, V> implements AbstractCache<K, V> {
@@ -17,6 +22,11 @@ public class InMemoryCache<K, V> implements AbstractCache<K, V> {
     private int hitCount = 0;
     private int missCount = 0;
 
+    /**
+     * Initializes the cache
+     * @param evictionPolicy EvictionPolicy to be used
+     * @param capacity Capacity of the cache
+     */
     public InMemoryCache(EvictionPolicy<K> evictionPolicy, Integer capacity) {
         this.cache = new ConcurrentHashMap<>();
         this.evictionPolicy = evictionPolicy;
@@ -46,7 +56,7 @@ public class InMemoryCache<K, V> implements AbstractCache<K, V> {
      * Returns the value for the given key
      *
      * @param key Of type K
-     * @return Optional<V>
+     * @return Optional of type V
      */
     @Override
     public Optional<V> get(K key) {

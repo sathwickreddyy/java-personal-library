@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
  * The oldest entry is automatically removed when the capacity is exceeded.
  * </p>
  *
- * <h3>Why LinkedHashMap?</h3>
+ * Why LinkedHashMap?
  * <ul>
  *   <li>Maintains key-value mappings, unlike LinkedHashSet which only stores keys.</li>
  *   <li>Supports <b>access-ordering</b> (enabled via constructor), ensuring quick LRU eviction.</li>
