@@ -13,8 +13,12 @@ public class NullSafeCache<K,V> implements AbstractCache<K, V> {
     /**
      * Null Safe Cache constructor
      * @param delegateCache Of type AbstractCache
+     * @throws NullPointerException if delegateCache is null@
      */
     public NullSafeCache(AbstractCache<K, V> delegateCache) {
+        if(delegateCache == null) {
+            throw new NullPointerException("Delegate cache cannot be null");
+        }
         this.delegateCache = delegateCache;
     }
 

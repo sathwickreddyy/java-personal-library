@@ -4,6 +4,7 @@ import com.java.oops.cache.eviction.EvictionPolicy;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,7 +29,7 @@ public class InMemoryCache<K, V> implements AbstractCache<K, V> {
      * @param capacity Capacity of the cache
      */
     public InMemoryCache(EvictionPolicy<K> evictionPolicy, Integer capacity) {
-        this.cache = new ConcurrentHashMap<>();
+        this.cache = new HashMap<>();
         this.evictionPolicy = evictionPolicy;
         this.capacity = capacity;
     }
@@ -64,7 +65,7 @@ public class InMemoryCache<K, V> implements AbstractCache<K, V> {
             hitCount++;
             log.debug("Key Hit in the cache for key: {}", key);
             evictionPolicy.recordAccess(key);
-            return Optional.of(cache.get(key));
+            return Optional.ofNullable(cache.get(key));
         }
         missCount++;
         log.debug("Key miss in the cache for key: {}", key);
