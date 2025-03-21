@@ -24,6 +24,11 @@ public class ThreadSafeCacheBenchmarkRunner {
     private static final int WRITE_PERCENTAGE = 80; // 80% writes for write-heavy workload
     private static final int CACHE_SIZE = 10000;
 
+    /**
+     * Run the benchmark
+     * @param args command line arguments
+     * @throws InterruptedException if the benchmark is interrupted
+     */
     public static void main(String[] args) throws InterruptedException {
         // Create different thread-safe wrappers
         AbstractCache<String, String> readWriteCache = new ReadHeavyThreadSafeCache<>(new InMemoryCache<>(new LRUEvictionPolicy<>(CACHE_SIZE), CACHE_SIZE));
@@ -122,6 +127,7 @@ public class ThreadSafeCacheBenchmarkRunner {
 
     /**
      * Runs a more detailed analysis comparing different concurrency levels for WriteHeavyCache
+     * @throws InterruptedException if the benchmark is interrupted
      */
     public static void concurrencyLevelAnalysis() throws InterruptedException {
         AbstractCache<String, String> baseCache = new InMemoryCache<>(new LRUEvictionPolicy<>(CACHE_SIZE), CACHE_SIZE);

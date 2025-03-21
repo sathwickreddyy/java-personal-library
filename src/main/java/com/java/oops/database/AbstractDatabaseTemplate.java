@@ -37,6 +37,7 @@ public abstract class AbstractDatabaseTemplate {
      * @param sql SQL query to execute.
      * @param params Parameters for the query.
      * @param extractor ResultSetExtractor to process the ResultSet.
+     * @param <T> Type of the extracted result.
      * @return Optional containing the extracted result or empty if an error occurs.
      */
     protected <T> Optional<T> executeQuery(String sql, Object[] params, ResultSetExtractor<T> extractor)

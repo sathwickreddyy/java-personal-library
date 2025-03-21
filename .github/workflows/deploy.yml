@@ -61,7 +61,7 @@ jobs:
 
       # Step 3: Publish & Release to GitHub Packages
       - name: Publish Library to GitHub Packages
-        run: ./gradlew publish --no-daemon && ./gradlew release --no-daemon
+        run: git fetch --unshallow &&./gradlew publish --no-daemon && ./gradlew release --stacktrace --info
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

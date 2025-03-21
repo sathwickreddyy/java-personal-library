@@ -24,5 +24,9 @@ public interface CacheToDatabaseService<K,V>{
     void save(K key,V val);
 
     // @TODO
+
+    /**
+     * Bulk save data into persistent storage.
+     */
     void bulkSave();
 }
