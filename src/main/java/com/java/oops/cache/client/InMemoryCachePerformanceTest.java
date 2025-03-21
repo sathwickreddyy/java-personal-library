@@ -15,7 +15,7 @@ import java.util.Random;
 /**
  * Test Class
  */
-public class InMemoryCachePerformanceTest {
+class InMemoryCachePerformanceTest {
     /**
      * Test Runner
      */
