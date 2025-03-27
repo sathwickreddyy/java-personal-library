@@ -48,7 +48,7 @@ public class LRUEvictionPolicy<K> implements EvictionPolicy<K> {
      * @param key The accessed key.
      */
     @Override
-    public synchronized void recordAccess(K key) {
+    public void recordAccess(K key) {
         log.trace("Access recorded for key: {}", key);
         orderAccessMap.put(key, Boolean.TRUE);
         log.trace("orderAccessMap state after access: {}", orderAccessMap.keySet());
@@ -60,7 +60,7 @@ public class LRUEvictionPolicy<K> implements EvictionPolicy<K> {
      * @return The evicted key, or null if the orderAccessMap is empty.
      */
     @Override
-    public synchronized K evict() {
+    public K evict() {
         if (orderAccessMap.isEmpty()) {
             log.warn("Eviction requested but orderAccessMap is empty");
             return null;

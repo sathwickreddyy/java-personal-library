@@ -37,7 +37,7 @@ public class FIFOEvictionPolicy<K> implements EvictionPolicy<K> {
      * @param key Key accessed.
      */
     @Override
-    public synchronized void recordAccess(K key) {
+    public void recordAccess(K key) {
         if (!queue.contains(key)) {
             queue.offer(key);
             log.trace("Key recorded: {}. Current queue state: {}", key, queue);
@@ -52,7 +52,7 @@ public class FIFOEvictionPolicy<K> implements EvictionPolicy<K> {
      * @return Evicted key or null if no keys are available.
      */
     @Override
-    public synchronized K evict() {
+    public K evict() {
         K evictedKey = queue.poll();
         if (evictedKey == null) {
             log.warn("Eviction requested but cache is empty");

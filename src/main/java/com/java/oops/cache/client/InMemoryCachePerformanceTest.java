@@ -9,6 +9,7 @@ import org.apache.commons.math3.distribution.ZipfDistribution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.SecureRandom;
 import java.util.Optional;
 import java.util.Random;
 
@@ -27,17 +28,17 @@ class InMemoryCachePerformanceTest {
      */
     public static void main(String[] args) {
         int capacity = 300;
-        int numOfRequests = 5000;
+        int numOfRequests = 50000;
 
         logger.info("\nInitializing cache performance test with capacity: {} and number of requests: {}\n", capacity, numOfRequests);
 
-//        int[] requests = randomRequestsGenerator(numOfRequests, 1500);
-        int[] requests = skewedRequestsGenerator(numOfRequests, 450, 1500);
+        int[] requests = randomRequestsGenerator(numOfRequests, 900);
+//        int[] requests = skewedRequestsGenerator(numOfRequests, 450, 1500);
 //        int[] requests = zipFlanRequestsGenerator(numOfRequests,  1500);
 
 
         logger.info("Generated {} random requests with keys ranging from 0 to 7.", numOfRequests);
-        logger.info("Requests are: {}\n\n", requests);
+//        logger.info("Requests are: {}\n\n", requests);
 
         // Test with LRU, LFU, FIFO policies
         testCachePerformance(new LRUEvictionPolicy<>(capacity), capacity, requests, "LRU");
@@ -71,7 +72,7 @@ class InMemoryCachePerformanceTest {
     }
 
     private static int[] randomRequestsGenerator(int numOfRequests, int keySpace) {
-        Random random = new Random();
+        Random random = new SecureRandom();
         int[] requests = new int[numOfRequests];
 
         for (int i = 0; i < numOfRequests; i++) {
