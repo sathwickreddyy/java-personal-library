@@ -1,5 +1,7 @@
 Here's an end-to-end implementation of the provided caching architecture, including proper design patterns and comprehensive documentation:
 
+<img src="https://github.com/sathwickreddyy/java-personal-library/blob/main/src/main/java/com/java/oops/cache/architecture.png" alt="Cache Implementation"/>
+
 ## Implementation Overview
 
 This implementation demonstrates a modular caching system using Java, leveraging design patterns to ensure flexibility, scalability, and maintainability. The architecture includes:
