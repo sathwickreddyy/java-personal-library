@@ -297,3 +297,34 @@ public class CacheClient {
 
 This comprehensive implementation provides a clear example of applying design patterns effectively to build a scalable and maintainable caching system.
 
+## References
+
+- Arch Diagram as a Code - [Mermaid Live Editor](https://mermaid.live/)
+```
+graph TD
+    C[Cache LLD] --> D{Caching Strategy}
+    D --> E[Cache-Aside]
+    D --> F[Read-Through]
+    D --> G[Write-Through]
+    D --> H[Write-Behind]
+    
+    C --> I[Abstract Cache]
+    I --> J[In-Memory Cache]
+    I --> K[Distributed Cache]
+    I --> L[Null-Safe Cache]
+    I --> I2[Abstract TTL Cache]
+    I2 --> J2[In-Memory TTL Cache]
+    
+    J --> M[Eviction Policies]
+    J2 --> M
+    M --> N[LRU]
+    M --> O[LFU]
+    M --> P[FIFO]
+    
+    K --> Q[Hazelcast]
+    K --> R[Redis]
+    K --> S[Memcached]
+    
+    L --> T[Optional Wrapper]
+    L --> U[Null Object Pattern]
+```
