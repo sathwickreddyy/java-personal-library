@@ -35,7 +35,6 @@ public class InMemoryTTLCache<K, V> implements AbstractTTLCache<K, V>, AutoClose
     // Cleaner thread fields
     private final Thread cleanerThread;
     private volatile boolean running = true;
-    private final static long cleanupIntervalMillis = Duration.ofSeconds(120).toMillis();
 
     /**
      * Creates an InMemoryTTLCache with the specified eviction policy and capacity.
@@ -44,13 +43,7 @@ public class InMemoryTTLCache<K, V> implements AbstractTTLCache<K, V>, AutoClose
      * @param capacity       the maximum number of entries that can be stored in the cache
      */
     public InMemoryTTLCache(EvictionPolicy<K> evictionPolicy, int capacity) {
-        this.evictionPolicy = evictionPolicy;
-        this.capacity = capacity;
-        // Start the cleaner thread
-        this.cleanerThread = new Thread(this::cleanerLoop, "InMemoryTTLCache-Cleaner");
-        this.cleanerThread.setDaemon(true);
-        this.cleanerThread.start();
-        log.info("Started cache cleaner thread with interval {} ms", cleanupIntervalMillis);
+        this(evictionPolicy, capacity, Duration.ofSeconds(120));
     }
 
     /**
@@ -60,6 +53,23 @@ public class InMemoryTTLCache<K, V> implements AbstractTTLCache<K, V>, AutoClose
      */
     public InMemoryTTLCache(int capacity) {
         this(new LRUEvictionPolicy<>(capacity), capacity);
+    }
+
+    /**
+     * Creates an InMemoryTTLCache with the specified eviction policy, capacity, and cleanup interval.
+     *
+     * @param evictionPolicy   the eviction policy to use for capacity management
+     * @param capacity         the maximum number of entries that can be stored in the cache
+     * @param cleanupInterval  the interval at which expired entries should be cleaned up
+     */
+    public InMemoryTTLCache(EvictionPolicy<K> evictionPolicy, int capacity, Duration cleanupInterval) {
+        this.evictionPolicy = evictionPolicy;
+        this.capacity = capacity;
+        // Start the cleaner thread
+        this.cleanerThread = new Thread(() -> cleanerLoop(cleanupInterval.toMillis()), "InMemoryTTLCache-Cleaner");
+        this.cleanerThread.setDaemon(true);
+        this.cleanerThread.start();
+        log.info("Started cache cleaner thread with interval {} seconds", cleanupInterval.toSeconds());
     }
 
     /**
@@ -156,7 +166,7 @@ public class InMemoryTTLCache<K, V> implements AbstractTTLCache<K, V>, AutoClose
     /**
      * Periodically runs cleanup of expired entries until stopped.
      */
-    private void cleanerLoop() {
+    private void cleanerLoop(Long cleanupIntervalMillis) {
         while (running) {
             try {
                 Thread.sleep(cleanupIntervalMillis);
