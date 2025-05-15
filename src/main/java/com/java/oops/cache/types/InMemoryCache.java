@@ -80,7 +80,7 @@ public class InMemoryCache<K, V> implements AbstractCache<K, V> {
     @Override
     public void evict(K key) {
         log.debug("Evicting the key from the cache");
-        K evictedKey = evictionPolicy.evict();
-        cache.remove(evictedKey);
+        cache.remove(key);
+        evictionPolicy.evict(key);
     }
 }

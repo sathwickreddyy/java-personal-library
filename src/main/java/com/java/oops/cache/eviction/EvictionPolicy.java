@@ -17,4 +17,11 @@ public interface EvictionPolicy<K> {
      * @return Key of type K
      */
     K evict();
+
+    /**
+     * Evict the specific key
+     *
+     * @param key of type K
+     */
+    void evict(K key);
 }

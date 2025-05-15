@@ -1,37 +1,33 @@
 package com.java.oops.cache.eviction;
 
 import lombok.extern.slf4j.Slf4j;
-
 import java.util.LinkedHashMap;
 
-
 /**
- * Implementation of Least Recently Used (LRU) eviction policy.
+ * Implementation of the Least Recently Used (LRU) eviction policy.
  *
  * <p>
- * This class uses a {@link LinkedHashMap} to maintain the orderAccessMap in access order, 
- * ensuring that the least recently used (LRU) key is always at the front of the map.
- * The oldest entry is automatically removed when the capacity is exceeded.
+ * This class uses a {@link LinkedHashMap} configured for access-order,
+ * ensuring that the least recently used key is always at the front of the map.
+ * Eviction is performed explicitly via the {@link #evict()} or {@link #evict(Object)} methods.
  * </p>
  *
- * Why LinkedHashMap?
+ * <b>Why LinkedHashMap?</b>
  * <ul>
- *   <li>Maintains key-value mappings, unlike LinkedHashSet which only stores keys.</li>
- *   <li>Supports <b>access-ordering</b> (enabled via constructor), ensuring quick LRU eviction.</li>
- *   <li>Allows O(1) access, insertion, and removal operations.</li>
- *   <li>Overrides {@code removeEldestEntry()} to implement automatic eviction.</li>
+ *   <li>Maintains key-value mappings and access order for O(1) LRU operations.</li>
+ *   <li>Allows quick identification and removal of the least recently used entry.</li>
  * </ul>
  *
- * @param <K> Key type
+ * @param <K> the type of keys maintained by this policy
  */
 @Slf4j
 public class LRUEvictionPolicy<K> implements EvictionPolicy<K> {
 
     /**
-     * Internal orderAccessMap using LinkedHashMap to store keys in LRU order.
+     * Internal map to store keys in access order.
+     * The value is a dummy placeholder; only the keys and their order matter.
      */
     private final LinkedHashMap<K, Boolean> orderAccessMap;
-
 
     /**
      * Initializes an LRU eviction policy with the given capacity.
@@ -43,31 +39,45 @@ public class LRUEvictionPolicy<K> implements EvictionPolicy<K> {
     }
 
     /**
-     * Records access to the specified key, marking it as recently used.
+     * Records access to the specified key, marking it as most recently used.
+     * Adds the key if not already present.
      *
      * @param key The accessed key.
      */
     @Override
     public void recordAccess(K key) {
-        log.trace("Access recorded for key: {}", key);
         orderAccessMap.put(key, Boolean.TRUE);
-        log.trace("orderAccessMap state after access: {}", orderAccessMap.keySet());
+        log.debug("Recorded access for key '{}'. Current LRU order: {}", key, orderAccessMap.keySet());
     }
 
     /**
-     * Evicts the least recently used key from the orderAccessMap.
+     * Evicts the least recently used key from the map.
      *
-     * @return The evicted key, or null if the orderAccessMap is empty.
+     * @return The evicted key, or null if the map is empty.
      */
     @Override
     public K evict() {
         if (orderAccessMap.isEmpty()) {
-            log.warn("Eviction requested but orderAccessMap is empty");
+            log.info("Eviction requested but LRU map is empty.");
             return null;
         }
         K evictedKey = orderAccessMap.keySet().iterator().next();
         orderAccessMap.remove(evictedKey);
-        log.trace("Manually evicted LRU key: {}", evictedKey);
+        log.info("Evicted least recently used key '{}'.", evictedKey);
         return evictedKey;
+    }
+
+    /**
+     * Evicts a specific key from the map, if present.
+     *
+     * @param key The key to evict.
+     */
+    @Override
+    public void evict(K key) {
+        if (orderAccessMap.remove(key) != null) {
+            log.info("Evicted specific key '{}' from LRU map.", key);
+        } else {
+            log.debug("Eviction requested for non-existent key '{}'.", key);
+        }
     }
 }

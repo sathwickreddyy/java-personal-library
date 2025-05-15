@@ -61,4 +61,17 @@ public class FIFOEvictionPolicy<K> implements EvictionPolicy<K> {
         log.trace("Evicted oldest inserted key: {}", evictedKey);
         return evictedKey;
     }
+
+    /**
+     * Evict the specific key
+     *
+     * @param key of type K
+     */
+    @Override
+    public void evict(K key) {
+        if(key == null) {
+            return;
+        }
+        queue.remove(key);
+    }
 }
