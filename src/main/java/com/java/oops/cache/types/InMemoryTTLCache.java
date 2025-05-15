@@ -86,7 +86,7 @@ public class InMemoryTTLCache<K, V> implements AbstractTTLCache<K, V>, AutoClose
         if (isNewKey && cache.size() == capacity) {
             K toBeEvicted = evictionPolicy.evict();
             cache.remove(toBeEvicted);
-            log.info("Evicted key '{}' due to capacity limit", toBeEvicted);
+            log.debug("Evicted key '{}' due to capacity limit", toBeEvicted);
         }
         long expiryTime = ttl.isZero() ? -1L : System.currentTimeMillis() + ttl.toMillis();
         CacheEntry<V> cacheEntry = ttl.isZero()

@@ -32,14 +32,19 @@ class InMemoryCachePerformanceTest {
 
         logger.info("\nInitializing cache performance test with capacity: {} and number of requests: {}\n", capacity, numOfRequests);
 
-        int[] requests = randomRequestsGenerator(numOfRequests, 900);
-//        int[] requests = skewedRequestsGenerator(numOfRequests, 450, 1500);
-//        int[] requests = zipFlanRequestsGenerator(numOfRequests,  1500);
+        logger.info("Generated {} random requests with.", numOfRequests);
+
+        logger.info("\n\n\nTesting cache performance with randomRequestsGenerator\n\n\n");
+        testPerformances(capacity, randomRequestsGenerator(numOfRequests, 900));
+        logger.info("\n\n\nTesting cache performance with skewedRequestsGenerator\n\n\n");
+        testPerformances(capacity, skewedRequestsGenerator(numOfRequests, 450, 1500));
+        logger.info("\n\n\nTesting cache performance with zipFlanRequestsGenerator\n\n\n");
+        testPerformances(capacity, zipFlanRequestsGenerator(numOfRequests,  1500));
 
 
-        logger.info("Generated {} random requests with keys ranging from 0 to 7.", numOfRequests);
-//        logger.info("Requests are: {}\n\n", requests);
+    }
 
+    private static void testPerformances(int capacity, int[] requests) {
         // Test with LRU, LFU, FIFO policies
         testCachePerformance(new LRUEvictionPolicy<>(capacity), capacity, requests, "LRU");
         testCachePerformance(new LFUEvictionPolicy<>(), capacity, requests, "LFU");

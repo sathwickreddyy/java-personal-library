@@ -64,7 +64,7 @@ public class LRUEvictionPolicy<K> implements EvictionPolicy<K> {
         }
         K evictedKey = orderAccessMap.keySet().iterator().next();
         orderAccessMap.remove(evictedKey);
-        log.info("Evicted least recently used key '{}'.", evictedKey);
+        log.debug("Evicted least recently used key '{}'.", evictedKey);
         return evictedKey;
     }
 

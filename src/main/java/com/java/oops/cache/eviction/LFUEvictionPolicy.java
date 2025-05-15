@@ -108,7 +108,7 @@ public class LFUEvictionPolicy<K> implements EvictionPolicy<K> {
             minFreq = freqToKeys.keySet().stream().min(Integer::compareTo).orElse(0);
         }
 
-        log.info("Evicted key '{}' with frequency {}.", evictKey, minFreq);
+        log.debug("Evicted key '{}' with frequency {}.", evictKey, minFreq);
         return evictKey;
     }
 
