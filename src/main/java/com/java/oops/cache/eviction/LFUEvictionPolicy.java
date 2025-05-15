@@ -30,6 +30,7 @@ import java.util.Map;
  * </table>
  *
  * @param <K> Type of key used in the cache
+ * @author sathwick
  */
 @Slf4j
 public class LFUEvictionPolicy<K> implements EvictionPolicy<K> {

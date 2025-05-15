@@ -18,6 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @param <K> The type of keys maintained by this cache
  * @param <V> The type of values maintained by this cache
+ * @author sathwick
  */
 @Slf4j
 public class WriteHeavyThreadSafeCache<K, V> implements AbstractCache<K, V> {

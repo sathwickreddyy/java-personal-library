@@ -12,6 +12,7 @@ import java.util.Queue;
  * regardless of their access frequency or recency.</p>
  *
  * @param <K> Key type.
+ * @author sathwick
  */
 @Slf4j
 public class FIFOEvictionPolicy<K> implements EvictionPolicy<K> {

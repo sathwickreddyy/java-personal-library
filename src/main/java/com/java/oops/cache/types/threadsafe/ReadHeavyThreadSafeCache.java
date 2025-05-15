@@ -17,6 +17,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * @param <K> The type of keys maintained by this cache
  * @param <V> The type of values maintained by this cache
+ * @author sathwick
  */
 public class ReadHeavyThreadSafeCache<K, V> extends NullSafeCache<K, V> {
     private final ReadWriteLock readWriteLock;

@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
  * </ul>
  *
  * @param <K> the type of keys maintained by this policy
+ * @author sathwick
  */
 @Slf4j
 public class LRUEvictionPolicy<K> implements EvictionPolicy<K> {

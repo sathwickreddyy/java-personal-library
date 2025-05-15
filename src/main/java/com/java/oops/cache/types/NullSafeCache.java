@@ -6,6 +6,8 @@ import java.util.Optional;
  * NullSafeCache with Null Object Pattern
  * @param <K> Key of type K
  * @param <V> Value of type V
+ *
+ * @author sathwick
  */
 public class NullSafeCache<K,V> implements AbstractCache<K, V> {
     private final AbstractCache<K, V> delegateCache;

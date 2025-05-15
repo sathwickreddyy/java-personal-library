@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Test runner to benchmark performance of different cache implementations
  * with a focus on write-heavy workloads.
  */
-public class ThreadSafeCacheBenchmarkRunner {
+class ThreadSafeCacheBenchmarkRunner {
 
     private static final int NUM_THREADS = 32;
     private static final int OPERATIONS_PER_THREAD = 100000;

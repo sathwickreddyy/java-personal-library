@@ -1,6 +1,7 @@
 package com.java.oops.cache.types;
 
 import com.java.oops.cache.eviction.EvictionPolicy;
+import com.java.oops.cache.eviction.LRUEvictionPolicy;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * In Memory Cache - Generic
  * @param <K> Key of type K
  * @param <V> Value of type V
+ * @author sathwick
  */
 @Slf4j
 @Getter
@@ -32,6 +34,14 @@ public class InMemoryCache<K, V> implements AbstractCache<K, V> {
         this.cache = new HashMap<>();
         this.evictionPolicy = evictionPolicy;
         this.capacity = capacity;
+    }
+
+    /**
+     * Initializes the cache with LRUEvictionPolicy
+     * @param capacity Capacity of the cache
+     */
+    public InMemoryCache(Integer capacity) {
+        this(new LRUEvictionPolicy<>(capacity), capacity);
     }
 
     /**

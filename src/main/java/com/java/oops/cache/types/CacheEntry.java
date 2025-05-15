@@ -25,6 +25,8 @@ public class CacheEntry<V> {
      * @param value           the value to cache
      * @param expiryInMillis  the absolute expiry time in milliseconds since epoch,
      *                        or {@link #NO_EXPIRY} for no expiry
+     * @see #NO_EXPIRY
+     * @author sathwick
      */
     public CacheEntry(V value, long expiryInMillis) {
         this.value = value;

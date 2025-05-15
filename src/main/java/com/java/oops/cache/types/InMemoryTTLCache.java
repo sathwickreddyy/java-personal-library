@@ -1,7 +1,8 @@
 package com.java.oops.cache.types;
 
 import com.java.oops.cache.eviction.EvictionPolicy;
-import lombok.RequiredArgsConstructor;
+import com.java.oops.cache.eviction.LRUEvictionPolicy;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
@@ -11,30 +12,63 @@ import java.util.Optional;
 
 /**
  * In-memory cache implementation supporting TTL (Time-To-Live) for entries and pluggable eviction policy.
+ * <pre>
+ * Features:
+ * - Stores key-value pairs with optional expiry (TTL).
+ * - Integrates with a pluggable eviction policy for capacity management.
+ * - Provides methods for insertion, retrieval, eviction, and cleanup of expired entries.
  *
+ * Note: It includes a background thread for periodic cleanup of expired entries (every 2 minutes).
+ * </pre>
  * @param <K> Key type
  * @param <V> Value type
  * @author sathwick
  */
 @Slf4j
-@RequiredArgsConstructor
-public class InMemoryTTLCache<K, V> implements AbstractTTLCache<K, V> {
-    // Underlying cache storage
+@Getter
+public class InMemoryTTLCache<K, V> implements AbstractTTLCache<K, V>, AutoCloseable {
     private final Map<K, CacheEntry<V>> cache = new HashMap<>();
-    // Eviction policy to use when cache is full
     private final EvictionPolicy<K> evictionPolicy;
-    // Maximum number of entries in cache
-    private final Long capacity;
-    // Special value for entries with no expiry
-    private static final Long NO_EXPIRY = -1L;
+    private final int capacity;
+    private static final Duration NO_EXPIRY = Duration.ZERO;
+
+    // Cleaner thread fields
+    private final Thread cleanerThread;
+    private volatile boolean running = true;
+    private final static long cleanupIntervalMillis = Duration.ofSeconds(120).toMillis();
 
     /**
-     * Puts a key-value pair into the cache with a specified TTL.
-     * If cache is at capacity and key is new, evicts an entry based on the eviction policy.
+     * Creates an InMemoryTTLCache with the specified eviction policy and capacity.
+     *
+     * @param evictionPolicy the eviction policy to use for capacity management
+     * @param capacity       the maximum number of entries that can be stored in the cache
+     */
+    public InMemoryTTLCache(EvictionPolicy<K> evictionPolicy, int capacity) {
+        this.evictionPolicy = evictionPolicy;
+        this.capacity = capacity;
+        // Start the cleaner thread
+        this.cleanerThread = new Thread(this::cleanerLoop, "InMemoryTTLCache-Cleaner");
+        this.cleanerThread.setDaemon(true);
+        this.cleanerThread.start();
+        log.info("Started cache cleaner thread with interval {} ms", cleanupIntervalMillis);
+    }
+
+    /**
+     * Creates an InMemoryTTLCache with a default LRU eviction policy and the specified capacity.
+     *
+     * @param capacity the maximum number of entries that can be stored in the cache
+     */
+    public InMemoryTTLCache(int capacity) {
+        this(new LRUEvictionPolicy<>(capacity), capacity);
+    }
+
+    /**
+     * Inserts a key-value pair into the cache with a specified TTL.
+     * If the cache is at capacity and the key is new, evicts an entry based on the eviction policy.
      *
      * @param key   the cache key
      * @param value the cache value
-     * @param ttl   time-to-live duration; negative duration means no expiry
+     * @param ttl   time-to-live duration; Duration.ZERO means no expiry
      */
     @Override
     public void put(K key, V value, Duration ttl) {
@@ -44,24 +78,25 @@ public class InMemoryTTLCache<K, V> implements AbstractTTLCache<K, V> {
             cache.remove(toBeEvicted);
             log.info("Evicted key '{}' due to capacity limit", toBeEvicted);
         }
-        CacheEntry<V> cacheEntry = ttl.isNegative()
+        long expiryTime = ttl.isZero() ? -1L : System.currentTimeMillis() + ttl.toMillis();
+        CacheEntry<V> cacheEntry = ttl.isZero()
                 ? new CacheEntry<>(value)
-                : new CacheEntry<>(value, System.currentTimeMillis() + ttl.toMillis());
+                : new CacheEntry<>(value, expiryTime);
         cache.put(key, cacheEntry);
         evictionPolicy.recordAccess(key);
         log.info("Put key '{}' with TTL {} ms (expiry at {})", key, ttl.toMillis(),
-                ttl.isNegative() ? "NO_EXPIRY" : (System.currentTimeMillis() + ttl.toMillis()));
+                ttl.isZero() ? "NO_EXPIRY" : expiryTime);
     }
 
     /**
-     * Puts a key-value pair with no expiry.
+     * Inserts a key-value pair into the cache with no expiry.
      *
      * @param key   the cache key
      * @param value the cache value
      */
     @Override
     public void put(K key, V value) {
-        put(key, value, Duration.ofMillis(NO_EXPIRY));
+        put(key, value, NO_EXPIRY);
     }
 
     /**
@@ -98,5 +133,52 @@ public class InMemoryTTLCache<K, V> implements AbstractTTLCache<K, V> {
         cache.remove(key);
         evictionPolicy.evict(key);
         log.info("Manually evicted key '{}'", key);
+    }
+
+    /**
+     * Removes all expired entries from the cache.
+     * For each expired entry, logs the removal and notifies the eviction policy.
+     */
+    private void cleanUpExpiredEntries() {
+        log.debug("Starting cleanup of expired entries");
+        cache.entrySet().removeIf(entry -> {
+            if (entry.getValue().isExpired()) {
+                K key = entry.getKey();
+                log.info("Cleaner thread: Removing expired key '{}'", key);
+                evictionPolicy.evict(key);
+                return true;
+            }
+            return false;
+        });
+        log.debug("Completed cleanup of expired entries");
+    }
+
+    /**
+     * Periodically runs cleanup of expired entries until stopped.
+     */
+    private void cleanerLoop() {
+        while (running) {
+            try {
+                Thread.sleep(cleanupIntervalMillis);
+                cleanUpExpiredEntries();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                log.info("Cleaner thread interrupted, shutting down.");
+                break;
+            } catch (Exception e) {
+                log.error("Exception in cleaner thread: ", e);
+            }
+        }
+    }
+
+
+    /**
+     * Stops the cleaner thread and performs any necessary cleanup.
+     */
+    @Override
+    public void close() {
+        running = false;
+        cleanerThread.interrupt();
+        log.info("Cache cleaner thread stopped.");
     }
 }

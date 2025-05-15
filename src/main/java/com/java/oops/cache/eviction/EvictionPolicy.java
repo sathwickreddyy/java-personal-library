@@ -4,6 +4,7 @@ package com.java.oops.cache.eviction;
 /**
  * Eviction Policy to be implemented
  * @param <K> Key of type K
+ * @author sathwick
  */
 public interface EvictionPolicy<K> {
     /**
