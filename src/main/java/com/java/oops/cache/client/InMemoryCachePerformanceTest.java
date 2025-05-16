@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.security.SecureRandom;
-import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -34,13 +33,16 @@ class InMemoryCachePerformanceTest {
 
         logger.info("Generated {} random requests with.", numOfRequests);
 
-        logger.info("\n\n\nTesting cache performance with randomRequestsGenerator\n\n\n");
-        testPerformances(capacity, randomRequestsGenerator(numOfRequests, 900));
-        logger.info("\n\n\nTesting cache performance with skewedRequestsGenerator\n\n\n");
-        testPerformances(capacity, skewedRequestsGenerator(numOfRequests, 450, 1500));
-        logger.info("\n\n\nTesting cache performance with zipFlanRequestsGenerator\n\n\n");
-        testPerformances(capacity, zipFlanRequestsGenerator(numOfRequests,  1500));
+//        logger.info("\n\n\nTesting cache performance with randomRequestsGenerator\n\n\n");
+//        testPerformances(capacity, randomRequestsGenerator(numOfRequests, 900));
+//        logger.info("\n\n\nTesting cache performance with skewedRequestsGenerator\n\n\n");
+//        testPerformances(capacity, skewedRequestsGenerator(numOfRequests, 450, 1500));
+//        logger.info("\n\n\nTesting cache performance with zipFlanRequestsGenerator\n\n\n");
+//        testPerformances(capacity, zipFlanRequestsGenerator(numOfRequests,  1500));
 
+        int[] requests = {3, 1, 2, 1, 2, 6, 7, 3,2, 7, 1, 2, 3, 4, 5, 1, 2, 8,3, 9, 1, 2};
+        capacity = 4;
+        testPerformances(capacity, requests);
 
     }
 
@@ -57,15 +59,7 @@ class InMemoryCachePerformanceTest {
         logger.info("Testing cache performance with {} eviction policy.", policyName);
 
         for (int key : requests) {
-            // All requests are get requests
-            Optional<String> result = cache.get(key);
-            if (result.isEmpty()) {
-                cache.put(key, "Value_" + key);
-//                logger.info("Cache Miss:- PUT {} ; Cache Map {}", key, cache.getCache().keySet());
-            }
-//            else {
-//                logger.info("Cache Hit:- GET {} ; Cache Map {}", key, cache.getCache().keySet());
-//            }
+            cache.put(key, "Value_" + key);
         }
 
         double hitRate = ((double) cache.getHitCount() / requests.length) * 100;

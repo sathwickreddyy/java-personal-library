@@ -52,6 +52,11 @@ public class InMemoryCache<K, V> implements AbstractCache<K, V> {
      */
     @Override
     public void put(K key, V value) {
+        if(!cache.containsKey(key)){
+            missCount++;
+        } else {
+            hitCount++;
+        }
         if(!cache.containsKey(key) && cache.size() == capacity) {
             log.debug("Cache is full, evicting key according to eviction policy");
             K evictedKey = evictionPolicy.evict();
@@ -59,8 +64,8 @@ public class InMemoryCache<K, V> implements AbstractCache<K, V> {
         }
 
         log.debug("Updating the cache with given key {} and value {}", key, value);
-        evictionPolicy.recordAccess(key);
         cache.put(key, value);
+        evictionPolicy.recordAccess(key);
     }
 
     /**
@@ -72,12 +77,10 @@ public class InMemoryCache<K, V> implements AbstractCache<K, V> {
     @Override
     public Optional<V> get(K key) {
         if(cache.containsKey(key)) {
-            hitCount++;
             log.debug("Key Hit in the cache for key: {}", key);
             evictionPolicy.recordAccess(key);
             return Optional.ofNullable(cache.get(key));
         }
-        missCount++;
         log.debug("Key miss in the cache for key: {}", key);
         return Optional.empty();
     }
