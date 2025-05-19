@@ -3,9 +3,13 @@ package com.java.oops.cache.types;
 import java.util.Optional;
 
 /**
- * AbstractCache interface
- * @param <K> Key
- * @param <V> Value
+ * Represents a generic cache abstraction.
+ * <p>
+ * Provides basic cache operations such as put, get, and evict for key-value pairs.
+ * Implementations may be in-memory or distributed.
+ *
+ * @param <K> the type of keys maintained by this cache
+ * @param <V> the type of mapped values
  * @author sathwick
  */
 public interface AbstractCache<K, V> {

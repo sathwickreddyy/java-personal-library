@@ -1,4 +1,4 @@
-package com.java.oops.cache.types;
+package com.java.oops.cache.types.ttl;
 
 import com.java.oops.cache.eviction.EvictionPolicy;
 import com.java.oops.cache.eviction.LRUEvictionPolicy;

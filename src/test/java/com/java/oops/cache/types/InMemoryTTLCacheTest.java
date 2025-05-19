@@ -1,6 +1,8 @@
 package com.java.oops.cache.types;
 
 import com.java.oops.cache.eviction.LRUEvictionPolicy;
+import com.java.oops.cache.types.ttl.CacheEntry;
+import com.java.oops.cache.types.ttl.InMemoryTTLCache;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.Duration;
