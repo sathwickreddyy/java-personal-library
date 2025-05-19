@@ -310,7 +310,7 @@ graph TD
     
     C --> I[Abstract Cache]
     I --> J[In-Memory Cache]
-    I --> K[Distributed Cache]
+    I --> K[Abstract Distributed Cache]
     I --> L[Null-Safe Cache]
     I --> I2[Abstract TTL Cache]
     I2 --> J2[In-Memory TTL Cache]

@@ -1,7 +1,7 @@
 package com.java.oops.cache.types;
 
 import com.java.oops.cache.eviction.LRUEvictionPolicy;
-import com.java.oops.cache.types.ttl.CacheEntry;
+import com.java.oops.cache.types.ttl.AbstractTTLCache;
 import com.java.oops.cache.types.ttl.InMemoryTTLCache;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,7 +53,7 @@ public class InMemoryTTLCacheTest {
     @Test
     public void testAutoExpiry() throws InterruptedException {
         cache.put("key4", "value4", Duration.ofSeconds(2));
-        Map<String, CacheEntry<String>> entries = cache.getCache(); // get all entries>
+        Map<String, AbstractTTLCache.CacheEntry<String>> entries = cache.getCache(); // get all entries>
         assertEquals(1, entries.size());
         assertTrue(entries.containsKey("key4"));
         Thread.sleep(Duration.ofSeconds(6).toMillis()); // every 5 seconds thread will check for expired entries
