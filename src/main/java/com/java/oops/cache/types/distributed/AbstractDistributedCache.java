@@ -60,9 +60,8 @@ public interface AbstractDistributedCache<K, V> extends AbstractCache<K, V> {
      * Returns the value associated with the specified key if a lock is held and not expired.
      * @param key key
      * @return Lock Value if lock is held and not expired
-     * @throws Exception if an error occurs
      */
-    String fetchLockValue(String key) throws Exception;
+    String fetchLockValue(String key);
 
     /**
      * Returns default lock key
