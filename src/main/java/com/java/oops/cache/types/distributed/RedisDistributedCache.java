@@ -198,10 +198,9 @@ public class RedisDistributedCache<K extends Serializable, V extends Serializabl
      *
      * @param key key
      * @return lock value if lock is held and not expired
-     * @throws Exception if an error occurs
      */
     @Override
-    public String fetchLockValue(String key) throws Exception {
+    public String fetchLockValue(String key) {
         return redisClient.get(key);
     }
 
