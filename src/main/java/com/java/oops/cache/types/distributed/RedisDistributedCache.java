@@ -194,6 +194,19 @@ public class RedisDistributedCache<K extends Serializable, V extends Serializabl
     }
 
     /**
+     * Returns the value associated with the specified key if a lock is held and not expired.
+     *
+     * @param key key
+     * @return true if lock is held and not expired
+     * @throws Exception if an error occurs
+     */
+    @Override
+    public String fetchLock(String key) throws Exception {
+        return redisClient.get(key);
+    }
+
+
+    /**
      * Removes all entries from the cache.
      * <p>
      * Use with caution in production environments, as this operation may be expensive and affect all clients.
