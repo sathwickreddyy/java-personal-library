@@ -155,8 +155,7 @@ public class RedisDistributedCache<K extends Serializable, V extends Serializabl
     @Override
     public Boolean acquireLock(String key, String lockValue, Duration timeout) throws JedisException {
         try {
-            String lockKey = "lock:" + key;
-            String result = redisClient.set(lockKey, lockValue, SetParams.setParams().nx().px(timeout.toMillis()));
+            String result = redisClient.set(key, lockValue, SetParams.setParams().nx().px(timeout.toMillis()));
             if ("OK".equals(result)) {
                 log.debug("Lock acquired for key: {}", key);
                 return true;
@@ -179,9 +178,8 @@ public class RedisDistributedCache<K extends Serializable, V extends Serializabl
      */
     @Override
     public Boolean releaseLock(String key) throws JedisException {
-        String lockKey = "lock:" + key;
         try {
-            Long result = redisClient.del(lockKey);
+            Long result = redisClient.del(key);
             if (result != null && result > 0) {
                 log.debug("Lock released for key: {}", key);
                 return true;

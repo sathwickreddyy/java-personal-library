@@ -57,6 +57,15 @@ public interface AbstractDistributedCache<K, V> extends AbstractCache<K, V> {
     Boolean releaseLock(String key) throws Exception;
 
     /**
+     * Returns default lock key
+     * @param key key
+     * @return lock prefixed key
+     */
+    default String getLockKey(String key) {
+        return "lock:" + key;
+    }
+
+    /**
      * Removes all entries from the cache.
      * <p>
      * Use with caution in production environments, as this operation may be expensive and affect all clients.
